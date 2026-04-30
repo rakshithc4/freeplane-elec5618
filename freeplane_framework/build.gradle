@@ -12,7 +12,9 @@ dependencies {
 
 test {
 	// TestApp is not a JUnit test, just a debugging app
-	failOnNoDiscoveredTests = false
+    if (project.gradle.gradleVersion.startsWith('9.')) {
+        failOnNoDiscoveredTests = false
+    }
 }
 
 task freeplanelauncherJar(type: Jar) {
