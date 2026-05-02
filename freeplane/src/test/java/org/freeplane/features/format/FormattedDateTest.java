@@ -180,7 +180,7 @@ public class FormattedDateTest {
     public void testGetDateFormat() {
         // Check that the date format field is set correctly
         SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yy, hh:mm:ss");
-        FormattedDate fd = new FormattedDate(132, dateFormat);
+        FormattedDate fd = new FormattedDate(0, dateFormat);
 
         assertEquals(dateFormat, fd.getDateFormat());
     }
