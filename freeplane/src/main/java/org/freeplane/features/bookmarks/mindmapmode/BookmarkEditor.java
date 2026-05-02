@@ -7,10 +7,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.freeplane.core.ui.components.FocusRequestor;
 import org.freeplane.core.ui.textchanger.TranslatedElementFactory;
 import org.freeplane.core.util.TextUtils;
+import org.freeplane.features.map.FreeplaneStateLogger;
 import org.freeplane.features.map.IMapSelection;
 import org.freeplane.features.map.NodeModel;
 
@@ -163,7 +166,11 @@ class BookmarkEditor {
 
 	private int showBookmarkDialog(final BookmarkDialogComponents dialogComponents, final Object[] options, final String titleKey) {
 		final String title = TextUtils.getText(titleKey);
-		return JOptionPane.showOptionDialog(
+
+		FreeplaneStateLogger.logEvent("tan", "BOOKMARK_DIALOGUE_OPENED", "Select 'Bookmark node'");
+
+
+		int res = JOptionPane.showOptionDialog(
 				KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner(),
 				dialogComponents.getContainer(),
 				title,
@@ -172,6 +179,15 @@ class BookmarkEditor {
 				null,
 				options,
 				options[0]);
+
+		if (res == options.length - 1) {
+			FreeplaneStateLogger.logEvent("tan", "IDLE", "Click 'Cancel'");
+		}
+		else if (res == JOptionPane.CLOSED_OPTION) {
+			FreeplaneStateLogger.logEvent("tan", "IDLE", "Press 'Escape'");
+		}
+
+		return res;
 	}
 
 	private BookmarkSelectionResult createBookmarkSelectionResult(final int result, final BookmarkDialogComponents dialogComponents, final boolean isSingleSelection, final boolean hasAnyBookmark) {
@@ -211,6 +227,38 @@ class BookmarkEditor {
 		final Box components = Box.createVerticalBox();
 		components.add(nameInput);
 		components.add(opensAsRootCheckBox);
+
+		nameInput.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				// Do nothing
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				if (opensAsRootCheckBox.isSelected()) {
+					FreeplaneStateLogger.logEvent("tan", "OPEN_AS_ROOT_CHECKED", "Type bookmark name");
+				}
+				else {
+					FreeplaneStateLogger.logEvent("tan", "BOOKMARK_DIALOGUE_OPENED", "Type bookmark name");
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				// Do nothing
+			}
+		});
+
+		opensAsRootCheckBox.addActionListener((event) -> {
+			if (opensAsRootCheckBox.isSelected()) {
+				FreeplaneStateLogger.logEvent("tan", "OPEN_AS_ROOT_CHECKED", "Click 'Open as root'");
+			}
+			else {
+				FreeplaneStateLogger.logEvent("tan", "BOOKMARK_DIALOGUE_OPENED", "Click 'Open as root'");
+			}
+		});
 
 		return new BookmarkDialogComponents(components, nameInput, opensAsRootCheckBox);
 	}

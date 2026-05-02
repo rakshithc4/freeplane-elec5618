@@ -18,6 +18,7 @@ import org.freeplane.features.icon.IStateIconProvider;
 import org.freeplane.features.icon.IconController;
 import org.freeplane.features.icon.UIIcon;
 import org.freeplane.features.icon.factory.IconStoreFactory;
+import org.freeplane.features.map.FreeplaneStateLogger;
 import org.freeplane.features.map.IMapSelection;
 import org.freeplane.features.map.INodeSelectionListener;
 import org.freeplane.features.map.MapChangeEvent;
@@ -82,6 +83,7 @@ public class BookmarksController implements IExtension{
 	}
 
 	public void addBookmark(NodeModel node, NodeBookmarkDescriptor descriptor) {
+		FreeplaneStateLogger.logEvent("tan", "NODE_BOOKMARKED", "Click OK");
 		final MapModel map = node.getMap();
 		getBookmarks(map).add(node.createID(), descriptor);
 		fireBookmarksChanged(map);

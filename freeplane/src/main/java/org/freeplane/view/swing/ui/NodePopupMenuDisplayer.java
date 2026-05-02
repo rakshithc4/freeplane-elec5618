@@ -23,9 +23,12 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.freeplane.core.ui.ControllerPopupMenuListener;
 import org.freeplane.core.util.Compat;
+import org.freeplane.features.map.FreeplaneStateLogger;
 import org.freeplane.features.mode.Controller;
 import org.freeplane.features.mode.ModeController;
 import org.freeplane.view.swing.map.NodeView;
@@ -44,6 +47,24 @@ public class NodePopupMenuDisplayer {
 	public void showMenuAndConsumeEvent(final JPopupMenu popupmenu, final MouseEvent e) {
 		if (popupmenu != null) {
 			popupmenu.addHierarchyListener(popupListener);
+			popupmenu.addPopupMenuListener(new PopupMenuListener() {
+
+				@Override
+				public void popupMenuCanceled(PopupMenuEvent arg0) {
+					FreeplaneStateLogger.logEvent("tan", "IDLE", "Press Escape key");
+				}
+
+				@Override
+				public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0) {
+					// Do nothing
+				}
+
+				@Override
+				public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
+					// Do nothing
+				}
+				
+			});
 			popupmenu.show(e.getComponent(), e.getX(), e.getY());
 			e.consume();
 		}

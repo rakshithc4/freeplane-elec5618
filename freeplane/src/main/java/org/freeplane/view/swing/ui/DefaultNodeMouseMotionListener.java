@@ -16,6 +16,7 @@ import org.freeplane.features.icon.IconController;
 import org.freeplane.features.icon.NamedIcon;
 import org.freeplane.features.link.LinkController;
 import org.freeplane.features.map.FoldingController;
+import org.freeplane.features.map.FreeplaneStateLogger;
 import org.freeplane.features.map.MapController;
 import org.freeplane.features.map.NodeModel;
 import org.freeplane.features.mode.ModeController;
@@ -56,6 +57,7 @@ public class DefaultNodeMouseMotionListener implements IMouseListener {
 
 	@Override
 	public void mouseClicked(final MouseEvent e) {
+		FreeplaneStateLogger.logEvent("tan", "NODE_SELECTED", "Click node");
 		if(popupMenuIsShown){
 		    return;
 		}
@@ -308,6 +310,7 @@ public class DefaultNodeMouseMotionListener implements IMouseListener {
 	}
 
 	private void showPopupMenu(final MouseEvent e) {
+		FreeplaneStateLogger.logEvent("tan", "NODE_CONTEXT_MENU", "Right-click node");
 	    popupMenuIsShown = true;
 		final boolean inside = nodeSelector.isInside(e);
 		final boolean inFoldingRegion = ! inside && isInFoldingRegion(e);
