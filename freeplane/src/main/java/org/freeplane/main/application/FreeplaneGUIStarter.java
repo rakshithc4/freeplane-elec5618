@@ -25,7 +25,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -179,8 +183,11 @@ public class FreeplaneGUIStarter implements FreeplaneStarter {
 				applicationResourceController.addPropertyChangeListener((propertyName, newValue, oldValue) -> {
 					if("lookandfeel".equals(propertyName)
 							&& ! FrameController.VAQUA_LAF_CLASS_NAME.equals(newValue)) {
+						String fromState = UITools.isLightLookAndFeelInstalled() ? "LIGHT_THEME" : "DARK_THEME";
 						FrameController.setLookAndFeel(newValue);
 						SwingUtilities.updateComponentTreeUI(UITools.getFrame());
+						String toState = UITools.isLightLookAndFeelInstalled() ? "LIGHT_THEME" : "DARK_THEME";
+						logThemeTransition(fromState, toState);
 					}
 				});
 				lookandfeel =  applicationResourceController.getProperty("lookandfeel");
@@ -443,4 +450,15 @@ public class FreeplaneGUIStarter implements FreeplaneStarter {
 	public ResourceController getResourceController() {
 	    return applicationResourceController;
     }
+
+	private static void logThemeTransition(String fromState, String toState) {
+		String logLine = LocalDateTime.now() + " THEME_TRANSITION from=" + fromState + " to=" + toState;
+		LogUtils.info(logLine);
+		String logFile = System.getProperty("user.home") + "/freeplane_theme_transitions.log";
+		try (PrintWriter writer = new PrintWriter(new FileWriter(logFile, true))) {
+			writer.println(logLine);
+		} catch (IOException e) {
+			LogUtils.warn("Could not write theme transition log: " + e.getMessage());
+		}
+	}
 }
