@@ -66,7 +66,7 @@ public class NodeContentValueMatcherBottomUpTest {
         NodeContentItemReader nodeContentItemReader = mock(NodeContentItemReader.class);
         ObjectMapper objectMapper = mock(ObjectMapper.class);
         when(objectMapper.writeValueAsBytes(any())).thenReturn(new byte[100]);
-        UUID mapIdentifier = UUID.fromString("f55a56bb-9aed-419d-af69-3dbb4982a420");
+        UUID mapIdentifier = UUID.randomUUID();
         MapModel mapModel = mock(MapModel.class);
         NodeModel rootNode = mock(NodeModel.class);
         NodeModel matchingNode = mock(NodeModel.class);
